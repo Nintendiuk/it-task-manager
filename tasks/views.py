@@ -33,3 +33,35 @@ class SignupView(FormView):
         user = form.save()
         login(self.request, user)
         return redirect("tasks:index")
+
+
+class WorkerDetailView(LoginRequiredMixin, DetailView):
+    model = Worker
+    template_name = "tasks/worker_detail.html"
+    context_object_name = "worker"
+
+    def get_queryset(self):
+        return Worker.objects.select_related("position").prefetch_related(
+            "assigned_tasks__project",
+            "assigned_tasks__task_type",
+        )
+
+
+class WorkerListView(LoginRequiredMixin, ListView):
+    model = Worker
+    template_name = "tasks/worker_list.html"
+    context_object_name = "workers"
+    paginate_by = 10
+
+    def get_queryset(self):
+        qs = Worker.objects.select_related("position")
+        query = self.request.GET.get("q", "").strip()
+        if query:
+            qs = qs.filter(username__icontains=query)
+        return qs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["query_string"] = self.request.GET.urlencode()
+        context["search_query"] = self.request.GET.get("q", "")
+        return context
