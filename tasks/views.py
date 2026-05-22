@@ -65,3 +65,25 @@ class WorkerListView(LoginRequiredMixin, ListView):
         context["query_string"] = self.request.GET.urlencode()
         context["search_query"] = self.request.GET.get("q", "")
         return context
+
+
+class IndexView(LoginRequiredMixin, ListView):
+    model = Task
+    template_name = "tasks/index.html"
+    context_object_name = "tasks"
+    paginate_by = 5
+
+    def get_queryset(self):
+        return (
+            Task.objects
+            .select_related("task_type", "project")
+            .prefetch_related("assignees", "tags")
+            .filter(is_complete=False)
+        )
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        visits = self.request.session.get("visit_count", 0) + 1
+        self.request.session["visit_count"] = visits
+        context["visit_count"] = visits
+        return context
