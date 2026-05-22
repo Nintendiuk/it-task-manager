@@ -87,3 +87,14 @@ class IndexView(LoginRequiredMixin, ListView):
         self.request.session["visit_count"] = visits
         context["visit_count"] = visits
         return context
+
+
+@login_required
+@require_POST
+def toggle_assign_to_task(request, pk):
+    task = get_object_or_404(Task, pk=pk)
+    if request.user in task.assignees.all():
+        task.assignees.remove(request.user)
+    else:
+        task.assignees.add(request.user)
+    return redirect("tasks:task-detail", pk=pk)

@@ -14,4 +14,9 @@ urlpatterns = [
         views.WorkerDetailView.as_view(),
         name="worker-detail",
     ),
+    path(
+        "tasks/<int:pk>/toggle/",
+        views.toggle_assign_to_task,
+        name="toggle-assign",
+    ),
 ]
