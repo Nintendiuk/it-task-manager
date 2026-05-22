@@ -22,4 +22,3 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("", include("tasks.urls", namespace="tasks")),
 ]
-

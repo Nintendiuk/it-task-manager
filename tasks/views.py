@@ -224,5 +224,3 @@ class ProjectDeleteView(LoginRequiredMixin, DeleteView):
     model = Project
     template_name = "tasks/project_confirm_delete.html"
     success_url = reverse_lazy("tasks:project-list")
-
-
