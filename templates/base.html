@@ -5,9 +5,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{% block title %}IT Task Manager{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
+
   <nav class="navbar">
     <a class="navbar__brand" href="{% url 'tasks:index' %}">TaskManager</a>
     <ul class="navbar__links">
@@ -32,18 +36,21 @@
       {% endif %}
     </ul>
   </nav>
+
   <main class="main-content">
     {% if messages %}
       <div class="messages">
         {% for message in messages %}
-          <div class="message message--{{ message.tags }}">
-            {{ message }}
-          </div>
+          <div class="message message--{{ message.tags }}">{{ message }}</div>
         {% endfor %}
       </div>
     {% endif %}
     {% block content %}{% endblock %}
   </main>
-  <footer class="footer"><p>© 2024 IT Task Manager</p></footer>
+
+  <footer class="footer">
+    <p>&copy; 2024 IT Task Manager</p>
+  </footer>
+
 </body>
 </html>

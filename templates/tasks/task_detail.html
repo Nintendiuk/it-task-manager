@@ -1,7 +1,9 @@
 {% extends "base.html" %}
 {% block title %}{{ task.name }} — Task Manager{% endblock %}
+
 {% block content %}
 <article class="detail-card">
+
   <header class="detail-card__header">
     <h1>{{ task.name }}</h1>
     <span class="badge badge--{{ task.priority|lower }}">
@@ -11,15 +13,19 @@
       <span class="badge badge--success">Complete</span>
     {% endif %}
   </header>
+
   <dl class="detail-card__meta">
     {% if task.description %}
-      <dt>Description</dt><dd>{{ task.description }}</dd>
+      <dt>Description</dt>
+      <dd>{{ task.description }}</dd>
     {% endif %}
     {% if task.deadline %}
-      <dt>Deadline</dt><dd>{{ task.deadline }}</dd>
+      <dt>Deadline</dt>
+      <dd>{{ task.deadline }}</dd>
     {% endif %}
     {% if task.task_type %}
-      <dt>Type</dt><dd>{{ task.task_type }}</dd>
+      <dt>Type</dt>
+      <dd>{{ task.task_type }}</dd>
     {% endif %}
     {% if task.project %}
       <dt>Project</dt>
@@ -35,22 +41,37 @@
         <a href="{% url 'tasks:worker-detail' pk=worker.pk %}">
           {{ worker }}
         </a>{% if not forloop.last %}, {% endif %}
-      {% empty %}Unassigned{% endfor %}
+      {% empty %}
+        Unassigned
+      {% endfor %}
     </dd>
+    {% if task.tags.all %}
+      <dt>Tags</dt>
+      <dd>
+        {% for tag in task.tags.all %}
+          <span class="badge">{{ tag }}</span>
+        {% endfor %}
+      </dd>
+    {% endif %}
   </dl>
+
   <div class="detail-card__actions">
     <form method="post"
           action="{% url 'tasks:toggle-assign' pk=task.pk %}">
       {% csrf_token %}
-      <button type="submit"
-              class="btn {% if is_assigned %}btn--warning{% else %}btn--primary{% endif %}">
+      <button
+        type="submit"
+        class="btn {% if is_assigned %}btn--warning{% else %}btn--primary{% endif %}">
         {% if is_assigned %}Unassign me{% else %}Assign me{% endif %}
       </button>
     </form>
     <a href="{% url 'tasks:task-update' pk=task.pk %}" class="btn">Edit</a>
     <a href="{% url 'tasks:task-delete' pk=task.pk %}"
        class="btn btn--danger">Delete</a>
-    <a href="{% url 'tasks:task-list' %}" class="btn btn--ghost">Back</a>
+    <a href="{% url 'tasks:task-list' %}" class="btn btn--ghost">
+      Back to tasks
+    </a>
   </div>
+
 </article>
 {% endblock %}

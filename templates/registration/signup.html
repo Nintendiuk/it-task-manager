@@ -1,9 +1,13 @@
 {% extends "base.html" %}
 {% block title %}Sign Up — Task Manager{% endblock %}
+
 {% block content %}
 <section class="auth-section">
   <div class="auth-card">
+
     <h1 class="auth-card__title">Create account</h1>
+    <p class="auth-card__subtitle">Join your team workspace.</p>
+
     <form method="post" class="form">
       {% csrf_token %}
       {% for field in form %}
@@ -12,19 +16,27 @@
             {{ field.label }}
           </label>
           {{ field }}
+          {% if field.help_text %}
+            <p class="form__help">{{ field.help_text }}</p>
+          {% endif %}
           {% if field.errors %}
             <ul class="form__errors">
-              {% for e in field.errors %}<li>{{ e }}</li>{% endfor %}
+              {% for error in field.errors %}
+                <li>{{ error }}</li>
+              {% endfor %}
             </ul>
           {% endif %}
         </div>
       {% endfor %}
-      <button type="submit" class="btn btn--primary">Create account</button>
+      <button type="submit" class="btn btn--primary" style="width:100%;justify-content:center;margin-top:8px">
+        Create account
+      </button>
     </form>
+
     <p class="auth-card__footer">
-      Have an account?
-      <a href="{% url 'tasks:login-page' %}">Login</a>
+      Already have an account? <a href="{% url 'tasks:login-page' %}">Login</a>
     </p>
+
   </div>
 </section>
 {% endblock %}

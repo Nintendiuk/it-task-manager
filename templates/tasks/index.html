@@ -1,22 +1,30 @@
 {% extends "base.html" %}
 {% block title %}Dashboard — Task Manager{% endblock %}
+
 {% block content %}
 <section class="dashboard">
+
   <header class="dashboard__header">
     <h1>Dashboard</h1>
     <p class="dashboard__visit">
-      You have visited
-      <strong>{{ visit_count }}</strong>
+      You have visited <strong>{{ visit_count }}</strong>
       time{{ visit_count|pluralize }}.
     </p>
   </header>
+
+  <div class="dashboard__stats">
+    <div class="stat-card">
+      <span class="stat-card__num">{{ tasks.count }}</span>
+      <span class="stat-card__label">Open tasks</span>
+    </div>
+  </div>
+
   <section class="section">
     <header class="section__header">
-      <h2>Your open tasks</h2>
-      <a href="{% url 'tasks:task-create' %}" class="btn btn--primary">
-        + New task
-      </a>
+      <h2>Open tasks</h2>
+      <a href="{% url 'tasks:task-create' %}" class="btn btn--primary">+ New task</a>
     </header>
+
     <ul class="task-list">
       {% for task in tasks %}
         <li class="task-item task-item--{{ task.priority|lower }}">
@@ -35,6 +43,7 @@
         <li class="empty-state">No open tasks. Great job!</li>
       {% endfor %}
     </ul>
+
   </section>
 </section>
 {% endblock %}

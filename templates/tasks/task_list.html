@@ -1,16 +1,22 @@
 {% extends "base.html" %}
 {% block title %}Tasks — Task Manager{% endblock %}
+
 {% block content %}
 <section class="list-section">
+
   <header class="list-section__header">
     <h1>Tasks</h1>
-    <a href="{% url 'tasks:task-create' %}" class="btn btn--primary">
-      + New task
-    </a>
+    <a href="{% url 'tasks:task-create' %}" class="btn btn--primary">+ New task</a>
   </header>
+
   <form method="get" class="search-form">
-    <input type="text" name="q" value="{{ search_query }}"
-           placeholder="Search tasks..." class="search-form__input">
+    <input
+      type="text"
+      name="q"
+      value="{{ search_query }}"
+      placeholder="Search tasks…"
+      class="search-form__input"
+    >
     <select name="priority" class="search-form__select">
       <option value="">All priorities</option>
       {% for val, label in priorities %}
@@ -25,9 +31,10 @@
       <a href="{% url 'tasks:task-list' %}" class="btn btn--ghost">Clear</a>
     {% endif %}
   </form>
+
   <ul class="task-list">
     {% for task in tasks %}
-      <li class="task-item">
+      <li class="task-item task-item--{{ task.priority|lower }}">
         <a class="task-item__name"
            href="{% url 'tasks:task-detail' pk=task.pk %}">
           {{ task.name }}
@@ -38,6 +45,9 @@
         {% if task.is_complete %}
           <span class="badge badge--success">Done</span>
         {% endif %}
+        {% if task.project %}
+          <span class="task-item__project">{{ task.project }}</span>
+        {% endif %}
         <span class="task-item__actions">
           <a href="{% url 'tasks:task-update' pk=task.pk %}">Edit</a>
           <a href="{% url 'tasks:task-delete' pk=task.pk %}">Delete</a>
@@ -47,6 +57,7 @@
       <li class="empty-state">No tasks found.</li>
     {% endfor %}
   </ul>
+
   {% if is_paginated %}
     <nav class="pagination" aria-label="Task pagination">
       {% if page_obj.has_previous %}
@@ -66,5 +77,6 @@
       {% endif %}
     </nav>
   {% endif %}
+
 </section>
 {% endblock %}
