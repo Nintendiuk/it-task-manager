@@ -22,3 +22,14 @@ class CustomLogoutView(LogoutView):
     def dispatch(self, request, *args, **kwargs):
         request.session.flush()
         return super().dispatch(request, *args, **kwargs)
+
+
+class SignupView(FormView):
+    template_name = "registration/signup.html"
+    form_class = WorkerCreationForm
+    success_url = reverse_lazy("tasks:login-page")
+
+    def form_valid(self, form):
+        user = form.save()
+        login(self.request, user)
+        return redirect("tasks:index")
