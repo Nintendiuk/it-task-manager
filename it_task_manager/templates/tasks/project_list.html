@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}Projects — Task Manager{% endblock %}
+{% block content %}
+<section class="list-section">
+  <header class="list-section__header">
+    <h1>Projects</h1>
+    <a href="{% url 'tasks:project-create' %}" class="btn btn--primary">
+      + New project
+    </a>
+  </header>
+  <form method="get" class="search-form">
+    <input type="text" name="q" value="{{ search_query }}"
+           placeholder="Search projects..." class="search-form__input">
+    <button type="submit" class="btn">Search</button>
+    {% if search_query %}
+      <a href="{% url 'tasks:project-list' %}" class="btn btn--ghost">
+        Clear
+      </a>
+    {% endif %}
+  </form>
+  <ul class="task-list">
+    {% for project in projects %}
+      <li class="task-item">
+        <a class="task-item__name"
+           href="{% url 'tasks:project-detail' pk=project.pk %}">
+          {{ project.name }}
+        </a>
+        {% if project.is_complete %}
+          <span class="badge badge--success">Complete</span>
+        {% endif %}
+        {% if project.deadline %}
+          <span class="task-item__project">Due: {{ project.deadline }}</span>
+        {% endif %}
+        <span class="task-item__actions">
+          <a href="{% url 'tasks:project-update' pk=project.pk %}">Edit</a>
+          <a href="{% url 'tasks:project-delete' pk=project.pk %}">
+            Delete
+          </a>
+        </span>
+      </li>
+    {% empty %}
+      <li class="empty-state">No projects found.</li>
+    {% endfor %}
+  </ul>
+  {% if is_paginated %}
+    <nav class="pagination" aria-label="Project pagination">
+      {% if page_obj.has_previous %}
+        <a class="pagination__link"
+           href="?{{ query_string }}&page={{ page_obj.previous_page_number }}">
+          Previous
+        </a>
+      {% endif %}
+      <span class="pagination__info">
+        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+      </span>
+      {% if page_obj.has_next %}
+        <a class="pagination__link"
+           href="?{{ query_string }}&page={{ page_obj.next_page_number }}">
+          Next
+        </a>
+      {% endif %}
+    </nav>
+  {% endif %}
+</section>
+{% endblock %}
