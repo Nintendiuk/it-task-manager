@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% block title %}Tasks — Task Manager{% endblock %}
+
+{% block content %}
+<section class="list-section">
+
+  <header class="list-section__header">
+    <h1>Tasks</h1>
+    <a href="{% url 'tasks:task-create' %}" class="btn btn--primary">+ New task</a>
+  </header>
+
+  <form method="get" class="search-form">
+    <input
+      type="text"
+      name="q"
+      value="{{ search_query }}"
+      placeholder="Search tasks…"
+      class="search-form__input"
+    >
+    <select name="priority" class="search-form__select">
+      <option value="">All priorities</option>
+      {% for val, label in priorities %}
+        <option value="{{ val }}"
+          {% if priority_filter == val %}selected{% endif %}>
+          {{ label }}
+        </option>
+      {% endfor %}
+    </select>
+    <button type="submit" class="btn">Search</button>
+    {% if search_query or priority_filter %}
+      <a href="{% url 'tasks:task-list' %}" class="btn btn--ghost">Clear</a>
+    {% endif %}
+  </form>
+
+  <ul class="task-list">
+    {% for task in tasks %}
+      <li class="task-item task-item--{{ task.priority|lower }}">
+        <a class="task-item__name"
+           href="{% url 'tasks:task-detail' pk=task.pk %}">
+          {{ task.name }}
+        </a>
+        <span class="badge badge--{{ task.priority|lower }}">
+          {{ task.priority }}
+        </span>
+        {% if task.is_complete %}
+          <span class="badge badge--success">Done</span>
+        {% endif %}
+        {% if task.project %}
+          <span class="task-item__project">{{ task.project }}</span>
+        {% endif %}
+        <span class="task-item__actions">
+          <a href="{% url 'tasks:task-update' pk=task.pk %}">Edit</a>
+          <a href="{% url 'tasks:task-delete' pk=task.pk %}">Delete</a>
+        </span>
+      </li>
+    {% empty %}
+      <li class="empty-state">No tasks found.</li>
+    {% endfor %}
+  </ul>
+
+  {% if is_paginated %}
+    <nav class="pagination" aria-label="Task pagination">
+      {% if page_obj.has_previous %}
+        <a class="pagination__link"
+           href="?{{ query_string }}&page={{ page_obj.previous_page_number }}">
+          Previous
+        </a>
+      {% endif %}
+      <span class="pagination__info">
+        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+      </span>
+      {% if page_obj.has_next %}
+        <a class="pagination__link"
+           href="?{{ query_string }}&page={{ page_obj.next_page_number }}">
+          Next
+        </a>
+      {% endif %}
+    </nav>
+  {% endif %}
+
+</section>
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}Delete Project — Task Manager{% endblock %}
+
+{% block content %}
+<div class="confirm-card">
+  <h1>Delete project</h1>
+
+  <p style="font-size: 13px; color: var(--color-text-light); margin-bottom: 24px;">
+    Are you sure you want to delete <strong style="color: var(--color-text); font-weight: 500;">{{ object.name }}</strong>?
+  </p>
+  
+  <form method="post">
+    {% csrf_token %}
+    <div style="display: flex; gap: 10px;">
+      <button type="submit" class="btn btn--danger">Yes, delete</button>
+      <a href="{% url 'tasks:project-list' %}" class="btn btn--ghost">Cancel</a>
+    </div>
+  </form>
+</div>
+{% endblock %}
