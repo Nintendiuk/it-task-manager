@@ -5,7 +5,11 @@ from django.contrib.auth.views import LoginView, LogoutView
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.views.generic import (
-    CreateView, DeleteView, DetailView, ListView, UpdateView,
+    CreateView,
+    DeleteView,
+    DetailView,
+    ListView,
+    UpdateView,
 )
 from django.views.generic.edit import FormView
 
@@ -74,8 +78,7 @@ class IndexView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         return (
-            Task.objects
-            .select_related("task_type", "project")
+            Task.objects.select_related("task_type", "project")
             .prefetch_related("assignees", "tags")
             .filter(is_complete=False)
         )
@@ -107,10 +110,8 @@ class TaskListView(LoginRequiredMixin, ListView):
     paginate_by = 10
 
     def get_queryset(self):
-        qs = (
-            Task.objects
-            .select_related("task_type", "project")
-            .prefetch_related("assignees", "tags")
+        qs = Task.objects.select_related("task_type", "project").prefetch_related(
+            "assignees", "tags"
         )
         query = self.request.GET.get("q", "").strip()
         priority = self.request.GET.get("priority", "").strip()
@@ -135,17 +136,13 @@ class TaskDetailView(LoginRequiredMixin, DetailView):
     context_object_name = "task"
 
     def get_queryset(self):
-        return (
-            Task.objects
-            .select_related("task_type", "project")
-            .prefetch_related("assignees", "tags")
+        return Task.objects.select_related("task_type", "project").prefetch_related(
+            "assignees", "tags"
         )
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["is_assigned"] = (
-            self.request.user in self.object.assignees.all()
-        )
+        context["is_assigned"] = self.request.user in self.object.assignees.all()
         return context
 
 
@@ -179,11 +176,7 @@ class ProjectListView(LoginRequiredMixin, ListView):
     paginate_by = 10
 
     def get_queryset(self):
-        qs = (
-            Project.objects
-            .select_related("team")
-            .prefetch_related("tasks")
-        )
+        qs = Project.objects.select_related("team").prefetch_related("tasks")
         query = self.request.GET.get("q", "").strip()
         if query:
             qs = qs.filter(name__icontains=query)
@@ -202,10 +195,8 @@ class ProjectDetailView(LoginRequiredMixin, DetailView):
     context_object_name = "project"
 
     def get_queryset(self):
-        return (
-            Project.objects
-            .select_related("team")
-            .prefetch_related("tasks__assignees", "tasks__task_type")
+        return Project.objects.select_related("team").prefetch_related(
+            "tasks__assignees", "tasks__task_type"
         )
 
 

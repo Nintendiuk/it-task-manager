@@ -16,8 +16,13 @@ class WorkerCreationForm(UserCreationForm):
     class Meta(UserCreationForm.Meta):
         model = Worker
         fields = [
-            "username", "first_name", "last_name",
-            "email", "position", "password1", "password2",
+            "username",
+            "first_name",
+            "last_name",
+            "email",
+            "position",
+            "password1",
+            "password2",
         ]
 
 
@@ -30,16 +35,21 @@ class TaskForm(forms.ModelForm):
     class Meta:
         model = Task
         fields = [
-            "name", "description", "deadline", "priority",
-            "task_type", "project", "assignees", "tags", "is_complete",
+            "name",
+            "description",
+            "deadline",
+            "priority",
+            "task_type",
+            "project",
+            "assignees",
+            "tags",
+            "is_complete",
         ]
 
     def clean_deadline(self):
         deadline = self.cleaned_data.get("deadline")
         if deadline and deadline < datetime.date.today():
-            raise forms.ValidationError(
-                "Deadline cannot be in the past."
-            )
+            raise forms.ValidationError("Deadline cannot be in the past.")
         return deadline
 
 
@@ -52,13 +62,15 @@ class ProjectForm(forms.ModelForm):
     class Meta:
         model = Project
         fields = [
-            "name", "description", "team", "deadline", "is_complete",
+            "name",
+            "description",
+            "team",
+            "deadline",
+            "is_complete",
         ]
 
     def clean_deadline(self):
         deadline = self.cleaned_data.get("deadline")
         if deadline and deadline < datetime.date.today():
-            raise forms.ValidationError(
-                "Deadline cannot be in the past."
-            )
+            raise forms.ValidationError("Deadline cannot be in the past.")
         return deadline

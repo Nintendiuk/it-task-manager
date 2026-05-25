@@ -1,9 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
-from tasks.models import (
-    Position, Project, Tag, Task, TaskType, Team, Worker
-)
+from tasks.models import Position, Project, Tag, Task, TaskType, Team, Worker
 
 
 @admin.register(Position)
@@ -34,14 +32,16 @@ class TaskInline(admin.TabularInline):
 @admin.register(Worker)
 class WorkerAdmin(UserAdmin):
     list_display = [
-        "username", "first_name", "last_name",
-        "email", "position", "is_staff",
+        "username",
+        "first_name",
+        "last_name",
+        "email",
+        "position",
+        "is_staff",
     ]
     list_filter = ["position", "is_staff", "is_active"]
     search_fields = ["username", "first_name", "last_name", "email"]
-    fieldsets = UserAdmin.fieldsets + (
-        ("Work Info", {"fields": ("position",)}),
-    )
+    fieldsets = UserAdmin.fieldsets + (("Work Info", {"fields": ("position",)}),)
     add_fieldsets = UserAdmin.add_fieldsets + (
         ("Work Info", {"fields": ("position",)}),
     )
@@ -65,8 +65,12 @@ class ProjectAdmin(admin.ModelAdmin):
 @admin.register(Task)
 class TaskAdmin(admin.ModelAdmin):
     list_display = [
-        "name", "priority", "is_complete",
-        "deadline", "task_type", "project",
+        "name",
+        "priority",
+        "is_complete",
+        "deadline",
+        "task_type",
+        "project",
     ]
     list_filter = ["priority", "is_complete", "task_type"]
     search_fields = ["name", "description"]

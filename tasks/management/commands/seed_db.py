@@ -3,9 +3,7 @@ import datetime
 from django.contrib.auth.hashers import make_password
 from django.core.management.base import BaseCommand
 
-from tasks.models import (
-    Position, Project, Tag, Task, TaskType, Team, Worker
-)
+from tasks.models import Position, Project, Tag, Task, TaskType, Team, Worker
 
 
 class Command(BaseCommand):
@@ -26,9 +24,11 @@ class Command(BaseCommand):
             username="admin",
             defaults={
                 "password": make_password("admin123"),
-                "first_name": "Admin", "last_name": "User",
+                "first_name": "Admin",
+                "last_name": "User",
                 "email": "admin@example.com",
-                "is_staff": True, "is_superuser": True,
+                "is_staff": True,
+                "is_superuser": True,
                 "position": pos_dev,
             },
         )
@@ -36,7 +36,8 @@ class Command(BaseCommand):
             username="alice",
             defaults={
                 "password": make_password("alice123"),
-                "first_name": "Alice", "last_name": "Smith",
+                "first_name": "Alice",
+                "last_name": "Smith",
                 "position": pos_dev,
             },
         )
@@ -44,7 +45,8 @@ class Command(BaseCommand):
             username="bob",
             defaults={
                 "password": make_password("bob123"),
-                "first_name": "Bob", "last_name": "Jones",
+                "first_name": "Bob",
+                "last_name": "Jones",
                 "position": pos_pm,
             },
         )
@@ -65,22 +67,45 @@ class Command(BaseCommand):
         )
 
         tasks_data = [
-            {"name": "Fix login bug", "priority": Task.Priority.CRITICAL,
-             "task_type": tt_feat, "project": proj_a, "deadline": future},
-            {"name": "Add dashboard", "priority": Task.Priority.HIGH,
-             "task_type": tt_feat, "project": proj_a, "deadline": future},
-            {"name": "Refactor models", "priority": Task.Priority.MEDIUM,
-             "task_type": tt_ref, "project": proj_b,
-             "deadline": future, "is_complete": True},
-            {"name": "Write tests", "priority": Task.Priority.HIGH,
-             "task_type": tt_feat, "project": proj_b, "deadline": far},
-            {"name": "Update docs", "priority": Task.Priority.LOW,
-             "task_type": tt_feat, "project": proj_b, "deadline": far},
+            {
+                "name": "Fix login bug",
+                "priority": Task.Priority.CRITICAL,
+                "task_type": tt_feat,
+                "project": proj_a,
+                "deadline": future,
+            },
+            {
+                "name": "Add dashboard",
+                "priority": Task.Priority.HIGH,
+                "task_type": tt_feat,
+                "project": proj_a,
+                "deadline": future,
+            },
+            {
+                "name": "Refactor models",
+                "priority": Task.Priority.MEDIUM,
+                "task_type": tt_ref,
+                "project": proj_b,
+                "deadline": future,
+                "is_complete": True,
+            },
+            {
+                "name": "Write tests",
+                "priority": Task.Priority.HIGH,
+                "task_type": tt_feat,
+                "project": proj_b,
+                "deadline": far,
+            },
+            {
+                "name": "Update docs",
+                "priority": Task.Priority.LOW,
+                "task_type": tt_feat,
+                "project": proj_b,
+                "deadline": far,
+            },
         ]
         for data in tasks_data:
-            task, created = Task.objects.get_or_create(
-                name=data["name"], defaults=data
-            )
+            task, created = Task.objects.get_or_create(name=data["name"], defaults=data)
             if created:
                 task.assignees.add(alice)
                 task.tags.add(tag_be)

@@ -3,9 +3,7 @@ import datetime
 import pytest
 from django.db import IntegrityError
 
-from tasks.models import (
-    Position, Project, Tag, Task, TaskType, Team, Worker
-)
+from tasks.models import Position, Project, Tag, Task, TaskType, Team, Worker
 
 
 @pytest.mark.django_db
@@ -39,21 +37,20 @@ class TestWorker:
     def test_str_with_full_name(self):
         pos = Position.objects.create(name="Dev")
         worker = Worker.objects.create_user(
-            username="john", password="pass",
-            first_name="John", last_name="Doe", position=pos,
+            username="john",
+            password="pass",
+            first_name="John",
+            last_name="Doe",
+            position=pos,
         )
         assert str(worker) == "John Doe"
 
     def test_str_fallback_to_username(self):
-        worker = Worker.objects.create_user(
-            username="janedoe", password="pass"
-        )
+        worker = Worker.objects.create_user(username="janedoe", password="pass")
         assert str(worker) == "janedoe"
 
     def test_completed_tasks_property(self):
-        worker = Worker.objects.create_user(
-            username="worker1", password="pass"
-        )
+        worker = Worker.objects.create_user(username="worker1", password="pass")
         done = Task.objects.create(name="Done", is_complete=True)
         open_ = Task.objects.create(name="Open", is_complete=False)
         done.assignees.add(worker)
@@ -62,9 +59,7 @@ class TestWorker:
         assert open_ not in worker.completed_tasks
 
     def test_uncompleted_tasks_property(self):
-        worker = Worker.objects.create_user(
-            username="worker2", password="pass"
-        )
+        worker = Worker.objects.create_user(username="worker2", password="pass")
         done = Task.objects.create(name="Done2", is_complete=True)
         open_ = Task.objects.create(name="Open2", is_complete=False)
         done.assignees.add(worker)
@@ -105,10 +100,15 @@ class TestTask:
     def test_default_is_complete(self):
         assert Task.objects.create(name="T2").is_complete is False
 
-    @pytest.mark.parametrize("priority", [
-        Task.Priority.LOW, Task.Priority.MEDIUM,
-        Task.Priority.HIGH, Task.Priority.CRITICAL,
-    ])
+    @pytest.mark.parametrize(
+        "priority",
+        [
+            Task.Priority.LOW,
+            Task.Priority.MEDIUM,
+            Task.Priority.HIGH,
+            Task.Priority.CRITICAL,
+        ],
+    )
     def test_priority_choices(self, priority):
         t = Task.objects.create(name=f"T-{priority}", priority=priority)
         assert t.priority == priority

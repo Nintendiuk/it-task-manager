@@ -48,14 +48,10 @@ class PrivateViewsTests(TestCase):
         self.project_2 = Project.objects.create(name="Beta Project")
 
         self.task_1 = Task.objects.create(
-            name="Fix authentication bug",
-            project=self.project_1,
-            is_complete=False
+            name="Fix authentication bug", project=self.project_1, is_complete=False
         )
         self.task_2 = Task.objects.create(
-            name="Write view tests",
-            project=self.project_2,
-            is_complete=True
+            name="Write view tests", project=self.project_2, is_complete=True
         )
 
     def test_index_view_returns_only_incomplete_tasks(self):
@@ -88,8 +84,7 @@ class PrivateViewsTests(TestCase):
     def test_task_list_view_search_and_context(self):
         """Verify task search functionality and presence of filter parameters in the context"""
         response = self.client.get(
-            reverse("tasks:task-list"),
-            {"q": "Fix", "priority": "HIGH"}
+            reverse("tasks:task-list"), {"q": "Fix", "priority": "HIGH"}
         )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context["search_query"], "Fix")
@@ -101,7 +96,9 @@ class PrivateViewsTests(TestCase):
         url = reverse("tasks:toggle-assign", kwargs={"pk": self.task_1.pk})
 
         response = self.client.post(url)
-        self.assertRedirects(response, reverse("tasks:task-detail", kwargs={"pk": self.task_1.pk}))
+        self.assertRedirects(
+            response, reverse("tasks:task-detail", kwargs={"pk": self.task_1.pk})
+        )
         self.assertTrue(self.task_1.assignees.filter(pk=self.user.pk).exists())
 
         response = self.client.post(url)

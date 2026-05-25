@@ -9,30 +9,21 @@ class AccessControlTests(TestCase):
 
     def setUp(self):
         self.regular_worker = get_user_model().objects.create_user(
-            username="regular.developer",
-            password="password123",
-            is_staff=False
+            username="regular.developer", password="password123", is_staff=False
         )
         self.manager_worker = get_user_model().objects.create_user(
-            username="manager.admin",
-            password="password123",
-            is_staff=True
+            username="manager.admin", password="password123", is_staff=True
         )
 
         self.project = Project.objects.create(name="Core Infrastructure")
         self.task = Task.objects.create(
-            name="Deploy to production",
-            project=self.project
+            name="Deploy to production", project=self.project
         )
 
         self.project_delete_url = reverse(
-            "tasks:project-delete",
-            kwargs={"pk": self.project.pk}
+            "tasks:project-delete", kwargs={"pk": self.project.pk}
         )
-        self.task_delete_url = reverse(
-            "tasks:task-delete",
-            kwargs={"pk": self.task.pk}
-        )
+        self.task_delete_url = reverse("tasks:task-delete", kwargs={"pk": self.task.pk})
 
     def test_regular_worker_cannot_delete_project(self):
         """Verify that a non-staff worker receives a 403 Forbidden status when attempting to delete a project"""

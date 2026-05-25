@@ -10,3 +10,4 @@ exclude =
     .tox
 per-file-ignores =
     settings.py: E501
+    task_manager/settings/*.py: F403, F405, F401
